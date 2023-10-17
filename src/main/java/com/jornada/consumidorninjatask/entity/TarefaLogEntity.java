@@ -10,6 +10,6 @@ import java.util.Date;
 @Setter
 public class TarefaLogEntity {
     private OperacaoTarefa operacaoTarefa;
-    private TarefaDTO tarefaDTO;
+    private String tarefaDTO;
     private Date horario;
 }

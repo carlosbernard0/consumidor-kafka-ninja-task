@@ -1,7 +1,7 @@
 package com.jornada.consumidorninjatask.controller;
 
 import com.jornada.consumidorninjatask.dto.TarefaLogDTO;
-import com.jornada.consumidorninjatask.service.ConsumidorService;
+import com.jornada.consumidorninjatask.service.TarefaLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConsumidorController {
 
-    private final ConsumidorService consumidorService;
+    private final TarefaLogService tarefaLogService;
 
     @GetMapping
     public List<TarefaLogDTO> retornarLog() throws SQLException {
-        List<TarefaLogDTO> lista = consumidorService.retornarLog();
+        List<TarefaLogDTO> lista = tarefaLogService.retornarLog();
         return lista;
     }
 }

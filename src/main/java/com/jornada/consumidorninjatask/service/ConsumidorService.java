@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jornada.consumidorninjatask.dto.MensagemDTO;
 import com.jornada.consumidorninjatask.dto.TarefaLogDTO;
+import com.jornada.consumidorninjatask.dto.TarefaLogReceberDTO;
 import com.jornada.consumidorninjatask.entity.TarefaLogEntity;
 import com.jornada.consumidorninjatask.mapper.TarefaLogMapper;
 import com.jornada.consumidorninjatask.repository.ConsumidorRepository;
@@ -23,8 +24,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ConsumidorService {
-    private final TarefaLogMapper tarefaLogMapper;
-    private final ConsumidorRepository consumidorRepository;
+    private final TarefaLogService tarefaLogService;
 
     @KafkaListener(groupId = "${kafka.group.id}",
     topicPartitions = {@TopicPartition(topic = "${kafka.topic}", partitions ={"0"})},
@@ -36,25 +36,10 @@ public class ConsumidorService {
             @Header(KafkaHeaders.OFFSET) Long offset
     ) throws JsonProcessingException {
         //string em obj...
-        TarefaLogDTO dto = new ObjectMapper().readValue(mensagem, TarefaLogDTO.class);
+        TarefaLogReceberDTO dto = new ObjectMapper().readValue(mensagem, TarefaLogReceberDTO.class);
         log.info("Mensagem Recebida com Sucesso: {} \n chave: {} \n offset: {}", dto, chave, offset);
 
         //Salvar no banco
-        enviarMensagemMongo(dto);
+        tarefaLogService.enviarMensagemMongo(dto);
     }
-    public void enviarMensagemMongo(TarefaLogDTO dto){
-        TarefaLogEntity tarefaLogEntity = new TarefaLogEntity();
-        tarefaLogEntity = tarefaLogMapper.toEntity(dto);
-        consumidorRepository.save(tarefaLogEntity);
-        log.info("Mensagem Enviada ao banco com sucesso");
-    }
-
-    public List<TarefaLogDTO> retornarLog()throws SQLException {
-        List<TarefaLogEntity> log = consumidorRepository.findAll();
-        List<TarefaLogDTO> logDTO = log.stream()
-                .map(entity -> tarefaLogMapper.toDto((TarefaLogEntity) entity))
-                .toList();
-        return logDTO;
-    }
-
 }

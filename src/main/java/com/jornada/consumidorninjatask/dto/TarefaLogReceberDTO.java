@@ -5,8 +5,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TarefaLogDTO {
+public class TarefaLogReceberDTO {
     private OperacaoTarefa operacaoTarefa;
-    private String tarefaDTO;
+    private TarefaDTO tarefaDTO;
     private Date horario;
 }
